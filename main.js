@@ -197,6 +197,7 @@ const mainLayout = div().set_style({
     alignItems: 'flex-start',
     gap: '30px'
 })
+mainLayout.classList.add('main-layout')
 
 // Colonne gauche : liste articles
 const listCard = div().set_style({
@@ -209,6 +210,7 @@ const listCard = div().set_style({
     maxHeight: 'calc(100vh - 190px)',
     overflowY: 'auto'
 })
+listCard.classList.add('list-card')
 
 // Colonne droite : stats
 const statsColumn = div().set_style({
@@ -218,14 +220,17 @@ const statsColumn = div().set_style({
     flex: '1 1 40%',
     minWidth: '340px'
 })
+statsColumn.classList.add('stats-column')
 
 const hIndexCard = div().set_style(cardStyle())
+hIndexCard.classList.add('hindex-card')
 const chartCard = div().set_style({
     ...cardStyle(),
     minHeight: '240px',
     display: 'flex',
     flexDirection: 'column'
 })
+chartCard.classList.add('chart-card')
 
 const actionsBar = div().set_style({
     display: 'flex',
@@ -504,6 +509,21 @@ function renderAll() {
 statsColumn.add(hIndexCard, chartCard)
 mainLayout.add(listCard, statsColumn)
 root.add(header, mainLayout)
+
+    // Responsive styles injection
+    ; (function ensureResponsiveStyles() {
+        if (document.getElementById('hindex-responsive-styles')) return
+        const st = document.createElement('style')
+        st.id = 'hindex-responsive-styles'
+        st.textContent = `@media (max-width: 860px){
+        .main-layout{ flex-direction:column; }
+        .stats-column{ order:1; width:100%; min-width:unset; }
+        .hindex-card{ order:1; }
+        .chart-card{ display:none !important; }
+        .list-card{ order:2; max-height:unset; width:100%; }
+    }`
+        document.head.appendChild(st)
+    })()
 document.body.appendChild(root)
 
 uiReady = true
