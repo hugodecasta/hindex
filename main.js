@@ -1,7 +1,7 @@
 // Online H-Index Calculator Front-End
 // Built exclusively with vanille components (no index.html changes)
 
-import { div, h1, h2, p, button, input, span, hr, br } from './vanille/components.js'
+import { div, h1, h2, p, button, input, span, hr, br, alink } from './vanille/components.js'
 
 // ------------------------------ Data Layer
 
@@ -481,16 +481,74 @@ function renderActions() {
         button('Add Article', () => addArticle()).set_style(pillButtonStyle('#334155', '#1e293b')),
         button('Add Sample', () => addSample()).set_style(subtleButtonStyle()),
         button('Download JSON', () => downloadData()).set_style(subtleButtonStyle()),
+        button('Upload JSON', () => uploadData()).set_style(subtleButtonStyle()),
     )
 }
 
 function downloadData() {
-    const blob = new Blob([JSON.stringify(articles, null, 2)], { type: 'application/json' })
+    // Export all collections in a simple object { collectionName: [ {title,citations}, ... ] }
+    const exportObj = {}
+    for (const [cName, list] of Object.entries(state.collections)) {
+        exportObj[cName] = list.map(a => ({ title: a.title || '', citations: Number(a.citations) || 0 }))
+    }
+    const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
-    a.download = 'hindex_articles.json'
+    a.download = 'hindex_collections.json'
     a.click()
     URL.revokeObjectURL(a.href)
+}
+
+function uploadData() {
+    const inp = document.createElement('input')
+    inp.type = 'file'
+    inp.accept = 'application/json,.json'
+    inp.onchange = () => {
+        const file = inp.files?.[0]
+        if (!file) return
+        const reader = new FileReader()
+        reader.onload = () => {
+            try {
+                const parsed = JSON.parse(reader.result)
+                // Accept two shapes:
+                // 1) { collectionName: [ {title,citations}, ... ], ... }
+                // 2) legacy array => becomes a new imported collection
+                if (Array.isArray(parsed)) {
+                    let base = 'Imported'
+                    let i = 1
+                    while (state.collections[base + (i > 1 ? (' ' + i) : '')]) i++
+                    const name = base + (i > 1 ? (' ' + i) : '')
+                    state.collections[name] = parsed.map(a => ({ title: a.title || '', citations: Number(a.citations) || 0 }))
+                    state.current = name
+                } else if (parsed && typeof parsed === 'object') {
+                    for (const [cName, list] of Object.entries(parsed)) {
+                        if (!Array.isArray(list)) continue
+                        let finalName = cName.trim() || 'Imported'
+                        if (state.collections[finalName]) {
+                            // merge by creating a unique new name
+                            let base = finalName
+                            let suf = 2
+                            while (state.collections[base + ' ' + suf]) suf++
+                            finalName = base + ' ' + suf
+                        }
+                        state.collections[finalName] = list.map(a => ({ title: a.title || '', citations: Number(a.citations) || 0 }))
+                    }
+                } else {
+                    alert('JSON format not recognized.')
+                    return
+                }
+                // Reset articles ref to current
+                articles = state.collections[state.current]
+                persist()
+                alert('Collections imported.')
+            } catch (e) {
+                console.error(e)
+                alert('Failed to parse JSON.')
+            }
+        }
+        reader.readAsText(file)
+    }
+    inp.click()
 }
 
 function addSample() {
@@ -525,6 +583,32 @@ root.add(header, mainLayout)
         document.head.appendChild(st)
     })()
 document.body.appendChild(root)
+
+    // --- Filigrane / Watermark vers le dépôt GitHub
+    ; (function addWatermark() {
+        if (document.getElementById('hindex-watermark')) return
+        const link = alink('https://github.com/hugodecasta/hindex', '_blank',
+            'github.com/hugodecasta/hindex')
+            .set_style({
+                color: 'rgba(0,0,0,0.28)',
+                textDecoration: 'none',
+                fontWeight: '500',
+                letterSpacing: '.5px'
+            })
+        link.on('mouseover', () => { link.style.color = 'rgba(0,0,0,0.55)'; link.style.textDecoration = 'underline' })
+        link.on('mouseout', () => { link.style.color = 'rgba(0,0,0,0.28)'; link.style.textDecoration = 'none' })
+        const wrap = div().add(link).set_attributes({ id: 'hindex-watermark' })
+            .set_style({
+                position: 'fixed',
+                bottom: '6px',
+                right: '10px',
+                fontSize: '.6rem',
+                zIndex: 9999,
+                lineHeight: 1.1,
+                userSelect: 'none'
+            })
+        document.body.appendChild(wrap)
+    })()
 
 uiReady = true
 renderAll()

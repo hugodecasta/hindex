@@ -1,15 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>My H-index</title>
+    <title>Calculateur H-Index en Ligne – Gratuit & Local | My H-index</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta name="description"
+        content="Calculateur H-index gratuit fonctionnant 100% dans votre navigateur. Ajoutez vos articles, obtenez instantanément votre H-index et téléchargez vos données – aucune donnée envoyée au serveur.">
+    <meta name="robots" content="index,follow" />
+    <meta name="author" content="Hugo Castaneda" />
+    <link rel="canonical" href="https://me.hugocastaneda.fr/hindex/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Calculateur H-Index en Ligne – Gratuit & Local" />
+    <meta property="og:description"
+        content="Ajoutez vos publications et calculez votre H-index instantanément. Aucune donnée ne quitte votre navigateur." />
+    <meta property="og:url" content="https://me.hugocastaneda.fr/hindex/" />
+    <meta property="og:locale" content="fr_FR" />
+    <!-- Optionally set an image (replace when you have a social preview) -->
+    <meta property="og:image" content="https://me.hugocastaneda.fr/hindex/og-image.jpg" />
+    <meta property="og:image:alt" content="Aperçu du calculateur H-index" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Calculateur H-Index – Gratuit & Local" />
+    <meta name="twitter:description" content="Calculez rapidement votre H-index sans envoyer vos données." />
+    <meta name="twitter:image" content="https://me.hugocastaneda.fr/hindex/og-image.jpg" />
+
+    <!-- PWA friendly (optional placeholders) -->
+    <meta name="theme-color" content="#334155" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <!-- Source / Issues repository references -->
+    <link rel="help" href="https://github.com/hugodecasta/hindex/issues" />
+    <link rel="source" href="https://github.com/hugodecasta/hindex" />
+
+    <!-- Structured Data JSON-LD -->
+    <script type="application/ld+json">{
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Calculateur H-Index",
+        "url": "https://me.hugocastaneda.fr/hindex/",
+        "applicationCategory": "Education",
+        "operatingSystem": "Any",
+        "description": "Calculateur H-index gratuit fonctionnant 100% côté client (aucun envoi de données).",
+        "inLanguage": "fr",
+        "author": {"@type": "Person", "name": "Hugo Castaneda"},
+        "sameAs": ["https://github.com/hugodecasta/hindex"],
+        "isBasedOn": "https://github.com/hugodecasta/hindex",
+        "potentialAction": [{
+            "@type": "Action",
+            "name": "Ouvrir une issue",
+            "target": "https://github.com/hugodecasta/hindex/issues"
+        }]
+    }</script>
+
     <script src='main.js' type="module"></script>
 </head>
 
 <body>
+    <!-- Fallback SEO content (le JS reconstruit l'UI) -->
+    <noscript>
+        <h1>Calculateur H-index en Ligne</h1>
+        <p>Ajoutez vos publications (titre + citations) et obtenez immédiatement votre H-index. Cette application tourne
+            entièrement dans votre navigateur : confidentialité maximale.</p>
+        <p>Code source & signaler un problème : <a href="https://github.com/hugodecasta/hindex">Projet GitHub</a>.</p>
+    </noscript>
 
 </body>
 
