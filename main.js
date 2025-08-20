@@ -206,9 +206,7 @@ const listCard = div().set_style({
     maxWidth: '780px',
     padding: '14px 16px 10px',
     display: 'flex',
-    flexDirection: 'column',
-    maxHeight: 'calc(100vh - 190px)',
-    overflowY: 'auto'
+    flexDirection: 'column'
 })
 listCard.classList.add('list-card')
 
@@ -518,9 +516,11 @@ root.add(header, mainLayout)
         st.textContent = `@media (max-width: 860px){
         .main-layout{ flex-direction:column; }
         .stats-column{ order:1; width:100%; min-width:unset; }
-        .hindex-card{ order:1; }
+        .hindex-card{ order:1; width:100%; max-width:100%; }
         .chart-card{ display:none !important; }
-        .list-card{ order:2; max-height:unset; width:100%; }
+    .list-card{ order:2; width:100%; max-width:100% !important; }
+        /* Ensure consistent horizontal sizing */
+        .list-card, .hindex-card { box-sizing:border-box; }
     }`
         document.head.appendChild(st)
     })()
